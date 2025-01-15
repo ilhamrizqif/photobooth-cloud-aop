@@ -10,7 +10,7 @@ which npm || { echo "npm not found"; exit 1; }
 echo "Starting deployment process..."
 
 # Navigate to the application's directory
-cd /home/iwabri/htdocs/api-iwabri.abracodebra.com || exit
+cd /home/ai-photobooth/htdocs/photobooth-ai.api.mahakreasi.com || exit
 
 # Pull the latest changes from the GitHub repository
 git pull origin main

@@ -1,7 +1,7 @@
 module.exports = {
     apps: [
       {
-        name: "Api-Iwabri",              // Name of your application
+        name: "Api-ai-photobooth",              // Name of your application
         script: "./server.js",      // Path to the main file
         instances: "max",           // Auto-detect the number of instances (for clustering)
         exec_mode: "cluster",       // Run in cluster mode
