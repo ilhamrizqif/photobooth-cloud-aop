@@ -50,7 +50,7 @@ jobs:
             pm2 save
 
             # Set up PM2 to start on boot with systemd
-            pm2 startup systemd -u ${{AI_USER}} --hp /home/${{AI_USER}}
+            pm2 startup systemd -u ${USER} --hp /home/${USER}
 
             # Exit with a success message
             echo "Deployment complete!"
