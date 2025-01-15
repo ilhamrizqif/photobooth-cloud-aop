@@ -5,7 +5,7 @@ const path = require('path');
 const QRCode = require('qrcode'); // Install with `npm install qrcode`
 
 const app = express();
-const PORT = 3000;
+const PORT = 3115;
 
 // Middleware to parse JSON requests
 app.use(bodyParser.json({ limit: '50mb' }));
