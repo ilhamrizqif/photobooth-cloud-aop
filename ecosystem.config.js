@@ -3,7 +3,7 @@ module.exports = {
       {
         name: "Api-ai-photobooth",              // Name of your application
         script: "./server.js",      // Path to the main file
-        instances: "max",           // Auto-detect the number of instances (for clustering)
+        instances: "1",           // Auto-detect the number of instances (for clustering)
         exec_mode: "cluster",       // Run in cluster mode
         env: {
           NODE_ENV: "development",  // Environment variables for development
