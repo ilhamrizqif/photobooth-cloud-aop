@@ -14,7 +14,7 @@ app.use(bodyParser.json({ limit: '50mb' }));
 app.post('/upload', async (req, res) => {
     try {
         const { image } = req.body;
-
+        console.log('image:', image);
         if (!image) {
             return res.status(400).send({ message: 'No image provided.' });
         }
@@ -26,6 +26,7 @@ app.post('/upload', async (req, res) => {
         // Define file path and name
         const resultFilename = `uploaded_image_${Date.now()}.${fileType}`;
         const filePath = path.join(__dirname, 'uploads', resultFilename);
+        console.log('filePath:', filePath);
 
         // Ensure the uploads directory exists
         if (!fs.existsSync(path.join(__dirname, 'uploads'))) {
