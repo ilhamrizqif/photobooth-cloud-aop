@@ -1,0 +1,11 @@
+# npm
+node_modules
+package-lock.json
+*.log
+*.gz
+
+# Coveralls
+
+# Benchmarking
+# ignore additional files using core.excludesFile
+# https://git-scm.com/docs/gitignore
