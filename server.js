@@ -31,7 +31,7 @@ app.post('/upload', async (req, res) => {
         fs.writeFileSync(filePath, image, { encoding: 'base64' });
 
         // Generate a QR code for the download URL
-        const downloadUrl = `http://localhost:${PORT}/downloads/${resultFilename}`;
+        const downloadUrl = `http://photobooth-ai.api.mahakreasi.com/downloads/${resultFilename}`;
         const qrCodeDataURL = await QRCode.toDataURL(downloadUrl);
 
         // Prepare response data
