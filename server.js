@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
-const QRCode = require('qrcode'); // Install with `npm install qrcode`
+const QRCode = require('qrcode'); // Ensure this package is installed
 
 const app = express();
 const PORT = 3115;
@@ -14,30 +14,24 @@ app.use(bodyParser.json({ limit: '50mb' }));
 app.post('/upload', async (req, res) => {
     try {
         const { image } = req.body;
-        console.log('image:', image);
         if (!image) {
-            return res.status(400).send({ message: 'No image provided.' });
+            return res.status(400).send({ message: 'No image data provided.' });
         }
 
-        // Extract Base64 data and determine file type
-        const base64Data = image.replace(/^data:image\/\w+;base64,/, '');
-        const fileType = image.match(/data:image\/(\w+);base64/)[1];
+        // Define file path and name (always PNG)
+        const resultFilename = `uploaded_image_${Date.now()}.png`;
+        const filePath = path.join(__dirname, 'downloads', resultFilename);
 
-        // Define file path and name
-        const resultFilename = `uploaded_image_${Date.now()}.${fileType}`;
-        const filePath = path.join(__dirname, 'uploads', resultFilename);
-        console.log('filePath:', filePath);
-
-        // Ensure the uploads directory exists
-        if (!fs.existsSync(path.join(__dirname, 'uploads'))) {
-            fs.mkdirSync(path.join(__dirname, 'uploads'));
+        // Ensure the downloads directory exists
+        if (!fs.existsSync(path.join(__dirname, 'downloads'))) {
+            fs.mkdirSync(path.join(__dirname, 'downloads'));
         }
 
         // Save the image to the server
-        fs.writeFileSync(filePath, base64Data, { encoding: 'base64' });
+        fs.writeFileSync(filePath, image, { encoding: 'base64' });
 
         // Generate a QR code for the download URL
-        const downloadUrl = `http://localhost:${PORT}/uploads/${resultFilename}`;
+        const downloadUrl = `http://localhost:${PORT}/downloads/${resultFilename}`;
         const qrCodeDataURL = await QRCode.toDataURL(downloadUrl);
 
         // Prepare response data
@@ -57,7 +51,7 @@ app.post('/upload', async (req, res) => {
 });
 
 // Serve uploaded files
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/downloads', express.static(path.join(__dirname, 'downloads')));
 
 // Start the server
 app.listen(PORT, () => {
