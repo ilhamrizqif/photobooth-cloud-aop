@@ -3,12 +3,59 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
 const QRCode = require('qrcode'); // Ensure this package is installed
+const upload = multer({ storage });
+const multer = require('multer');
+
 
 const app = express();
-const PORT = 3115;
+const PORT = 3265;
 
 // Middleware to parse JSON requests
 app.use(bodyParser.json({ limit: '50mb' }));
+
+// Set up multer storage
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        const uploadDir = path.join(__dirname, 'downloads');
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir);
+        }
+        cb(null, uploadDir);
+    },
+    filename: function (req, file, cb) {
+        const ext = path.extname(file.originalname);
+        const uniqueName = `uploaded_image_${Date.now()}${ext}`;
+        cb(null, uniqueName);
+    }
+});
+
+
+// New endpoint: accepts multipart/form-data image
+app.post('/recieve-file', upload.single('image'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).send({ message: 'No file uploaded.' });
+        }
+
+        const resultFilename = req.file.filename;
+        const downloadUrl = `https://server-photobooth.senimankode.id/downloads/${resultFilename}`;
+
+        // Generate QR code for download URL
+        const qrCodeDataURL = await QRCode.toDataURL(downloadUrl);
+
+        const response = {
+            qrCodeDataURL,
+            resultFilename,
+            download_url: downloadUrl,
+            message: 'File successfully uploaded and processed.'
+        };
+
+        res.status(201).json(response);
+    } catch (error) {
+        console.error('Error processing file upload:', error);
+        res.status(500).json({ message: 'File upload failed.', error: error.message });
+    }
+});
 
 // Route to handle image upload
 app.post('/upload', async (req, res) => {
@@ -31,7 +78,7 @@ app.post('/upload', async (req, res) => {
         fs.writeFileSync(filePath, image, { encoding: 'base64' });
 
         // Generate a QR code for the download URL
-        const downloadUrl = `http://photobooth-ai.api.mahakreasi.com/downloads/${resultFilename}`;
+        const downloadUrl = `https://server-photobooth.senimankode.id/downloads/${resultFilename}`;
         const qrCodeDataURL = await QRCode.toDataURL(downloadUrl);
 
         // Prepare response data
