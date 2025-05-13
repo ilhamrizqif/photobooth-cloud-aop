@@ -55,10 +55,15 @@ app.get('/', (req, res) => {
                 <meta charset="UTF-8" />
                 <title>📂 Downloadable Images</title>
                 <style>
+                    @font-face {
+                        font-family: 'NormsProRegular';
+                        src: url('/assets/fonts/normsproregular.TTF') format('truetype');
+                        font-weight: normal;
+                        font-style: normal;
+                    }
                     body {
-                        font-family: Arial, sans-serif;
-                        padding: 20px;
-                        background: url('/assets/bgphotobooth.webp') no-repeat center center fixed;
+                        font-family: 'NormsProRegular', Arial, sans-serif;
+                        background: linear-gradient(to right, #7f6bc6, #be72c2);
                         background-size: cover;
                     }
                     .gallery {
@@ -137,9 +142,15 @@ app.get('/downloads-result/:file', (req, res) => {
         <meta charset="UTF-8" />
         <title>📂 Download Image</title>
         <style>
+            @font-face {
+                font-family: 'NormsProRegular';
+                src: url('/assets/fonts/normsproregular.TTF') format('truetype');
+                font-weight: normal;
+                font-style: normal;
+            }
             body {
-                font-family: Arial, sans-serif;
-                background:url('/assets/bgphotobooth.webp') no-repeat center center fixed;
+                font-family: 'NormsProRegular', Arial, sans-serif;
+                background: linear-gradient(to right, #7f6bc6, #be72c2);
                 background-size: cover;
                 margin: 0;
                 padding: 40px;
