@@ -13,6 +13,7 @@ const PORT = 3265;
 
 // Middleware to parse JSON requests
 app.use(bodyParser.json({ limit: '50mb' }));
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 // Set up multer storage
 const storage = multer.diskStorage({
@@ -57,7 +58,8 @@ app.get('/', (req, res) => {
                     body {
                         font-family: Arial, sans-serif;
                         padding: 20px;
-                        background: #f4f4f4;
+                        background: url('/assets/bgphotobooth.webp') no-repeat center center fixed;
+                        background-size: cover;
                     }
                     .gallery {
                         display: grid;
@@ -137,7 +139,8 @@ app.get('/downloads-result/:file', (req, res) => {
         <style>
             body {
                 font-family: Arial, sans-serif;
-                background: #f4f4f4;
+                background:url('/assets/bgphotobooth.webp') no-repeat center center fixed;
+                background-size: cover;
                 margin: 0;
                 padding: 40px;
                 display: flex;
