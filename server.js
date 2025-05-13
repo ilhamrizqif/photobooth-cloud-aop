@@ -178,7 +178,7 @@ app.get('/downloads-result/:file', (req, res) => {
                 padding: 10px 20px;
                 font-size: 16px;
                 background-color: linear-gradient(to right, #7f6bc6, #be72c2);;
-                color: white;
+                color: black;
                 border: none;
                 border-radius: 4px;
                 cursor: pointer;
