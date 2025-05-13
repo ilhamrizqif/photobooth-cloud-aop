@@ -2,9 +2,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
-const QRCode = require('qrcode'); // Ensure this package is installed
-const upload = multer({ storage });
+const QRCode = require('qrcode'); 
 const multer = require('multer');
+// Ensure this package is installed
+const upload = multer({ storage });
 
 
 const app = express();
