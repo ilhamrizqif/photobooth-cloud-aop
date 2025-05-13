@@ -109,9 +109,8 @@ app.get('/', (req, res) => {
     });
 });
 
-// 📥 Download page with button
-app.get('/downloads-result', (req, res) => {
-    const file = req.query.file;
+app.get('/downloads-result/:file', (req, res) => {
+    const file = req.params.file;
     const filePath = path.join(__dirname, 'downloads', file);
 
     if (!file || !fs.existsSync(filePath)) {
@@ -129,7 +128,6 @@ app.get('/downloads-result', (req, res) => {
     `;
     res.send(html);
 });
-
 // New endpoint: accepts multipart/form-data image
 app.post('/recieve-file', upload.single('image'), async (req, res) => {
     try {
