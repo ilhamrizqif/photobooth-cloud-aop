@@ -114,7 +114,7 @@ app.get('/', (req, res) => {
                         <div class="item">
                             <a href="/downloads-result/${file}">
                                 <img src="/downloads/${file}" alt="${displayName}" />
-                                <p>${displayName}</p>
+                                <p>Click here to download:</p>
                             </a>
                             <a class=btnd href="/downloads/${file}" download>⬇️ Download</a>
                         </div>
@@ -199,7 +199,7 @@ app.get('/downloads-result/:file', (req, res) => {
     <body>
         <div class="container">
         <img src="/downloads/${file}" alt="${file}" />
-        <p>Click the button below to download <strong>${displayName}</strong>:</p>
+        <p>Click the button below to download image:</p>
         <a href="/downloads/${file}" download>
             <button>⬇️ Download</button>
         </a>
