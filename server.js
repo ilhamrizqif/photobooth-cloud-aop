@@ -107,6 +107,10 @@ app.get('/', (req, res) => {
                 </style>
             </head>
             <body>
+            div>
+                <div style="text-align: center; color: white;">
+                <img src="/assets/logojudul.webp" alt="Logo" style="width: 200px; margin-bottom: 20px;" />
+                </div>
                 <div class="gallery">
                 ${filesWithStats.map(({ file }) => {
                     const displayName = file.replace(/^uploaded_image_/, '');
