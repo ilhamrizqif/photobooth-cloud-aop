@@ -152,12 +152,11 @@ app.get('/downloads-result/:file', (req, res) => {
                 font-family: 'NormsProRegular', Arial, sans-serif;
                 background:url('/assets/clearbg.webp') no-repeat center center fixed;
                 background-size: cover;
-                margin: 0;
-                padding: 40px;
+                padding: 60px;
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                min-height: 100vh;
+                
             }
             .container {
                 background: white;
