@@ -79,6 +79,7 @@ app.get('/', (req, res) => {
                     .item a {
                         display: inline-block;
                         margin-top: 10px;
+                        text-color: #333;
                         text-decoration: none;
                         color: white;
                         padding: 5px 10px;
