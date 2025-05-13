@@ -154,6 +154,11 @@ app.get('/downloads-result/:file', (req, res) => {
                 font-weight: normal;
                 font-style: normal;
             }
+
+            html {
+                font-size: 16px; /* base size, scales well */
+            }
+
             body {
                 font-family: 'NormsProRegular', Arial, sans-serif;
                 background: url('/assets/clearbg.webp') no-repeat center center fixed;
@@ -166,39 +171,63 @@ app.get('/downloads-result/:file', (req, res) => {
                 align-items: center;
                 box-sizing: border-box;
             }
+
             .container {
                 background: white;
-                padding: 30px;
+                padding: 2rem;
                 border-radius: 10px;
                 box-shadow: 0 2px 8px rgba(0,0,0,0.1);
                 text-align: center;
                 max-width: 600px;
                 width: 100%;
             }
+
             img {
                 max-width: 100%;
                 height: auto;
                 border-radius: 6px;
-                margin-bottom: 20px;
+                margin-bottom: 1.5rem;
             }
+
+            p {
+                font-size: 1.1rem;
+                margin-bottom: 1rem;
+            }
+
             button {
-                padding: 10px 20px;
-                font-size: 16px;
+                padding: 0.75rem 1.5rem;
+                font-size: 1rem;
                 background: linear-gradient(to right, #7f6bc6, #be72c2);
-                background-attachment: fixed;
                 color: white;
                 border: none;
-                border-radius: 12px;
+                border-radius: 0.75rem;
                 cursor: pointer;
-                round: 6px;
             }
+
             a {
                 text-decoration: none;
             }
+
             .back-link {
                 display: block;
-                margin-top: 20px;
+                margin-top: 1.5rem;
                 color: #333;
+                font-size: 0.95rem;
+            }
+
+            /* Responsive scaling */
+            @media (max-width: 480px) {
+                html {
+                    font-size: 14px;
+                }
+
+                .container {
+                    padding: 1.5rem;
+                }
+
+                button {
+                    font-size: 0.9rem;
+                }
             }
         </style>
     </head>
