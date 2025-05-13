@@ -91,13 +91,16 @@ app.get('/', (req, res) => {
             <body>
                 <h1>📂 Downloadable Images</h1>
                 <div class="gallery">
-                    ${filesWithStats.map(({ file }) => `
+                ${filesWithStats.map(({ file }) => {
+                    const displayName = file.replace(/^uploaded_image_/, ''); // remove the prefix
+                    return `
                         <div class="item">
-                            <img src="/downloads/${file}" alt="${file}" />
-                            <p>${file}</p>
+                            <img src="/downloads/${file}" alt="${displayName}" />
+                            <p>${displayName}</p>
                             <a href="/downloads/${file}" download>⬇️ Download</a>
                         </div>
-                    `).join('')}
+                    `;
+                }).join('')}
                 </div>
             </body>
             </html>
