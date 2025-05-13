@@ -63,7 +63,7 @@ app.get('/', (req, res) => {
                     }
                     body {
                         font-family: 'NormsProRegular', Arial, sans-serif;
-                        background: url('/assets/bgphotobooth.webp') no-repeat center center fixed;
+                        background: url('/assets/clearbg.webp') no-repeat center center fixed;
                         background-size: cover;
                     }
                     .gallery {
@@ -150,7 +150,7 @@ app.get('/downloads-result/:file', (req, res) => {
             }
             body {
                 font-family: 'NormsProRegular', Arial, sans-serif;
-                background:url('/assets/bgphotobooth.webp') no-repeat center center fixed;
+                background:url('/assets/clearbg.webp') no-repeat center center fixed;
                 background-size: cover;
                 margin: 0;
                 padding: 40px;
