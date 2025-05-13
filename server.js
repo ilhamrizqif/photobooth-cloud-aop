@@ -30,7 +30,48 @@ const storage = multer.diskStorage({
     }
 });
 const upload = multer({ storage });
+app.use('/downloads', express.static(path.join(__dirname, 'downloads')));
 
+// 🌐 Root route: list all downloadable images
+app.get('/', (req, res) => {
+    const dir = path.join(__dirname, 'downloads');
+    fs.readdir(dir, (err, files) => {
+        if (err) return res.status(500).send('Failed to read directory.');
+
+        const html = `
+            <h1>📂 Downloadable Images</h1>
+            <ul>
+                ${files.map(file => `
+                    <li>
+                        <a href="/download?file=${encodeURIComponent(file)}">${file}</a> 
+                        - <a href="/downloads/${file}" download>Direct Download</a>
+                    </li>`).join('')}
+            </ul>
+        `;
+        res.send(html);
+    });
+});
+
+// 📥 Download page with button
+app.get('/downloads', (req, res) => {
+    const file = req.query.file;
+    const filePath = path.join(__dirname, 'downloads', file);
+
+    if (!file || !fs.existsSync(filePath)) {
+        return res.status(404).send('File not found.');
+    }
+
+    const html = `
+        <h1>Download File</h1>
+        <p>Click the button below to download <strong>${file}</strong>:</p>
+        <a href="/downloads/${file}" download>
+            <button style="padding: 10px 20px; font-size: 16px;">⬇️ Download</button>
+        </a>
+        <br><br>
+        <a href="/">🔙 Back to file list</a>
+    `;
+    res.send(html);
+});
 
 // New endpoint: accepts multipart/form-data image
 app.post('/recieve-file', upload.single('image'), async (req, res) => {
@@ -100,7 +141,7 @@ app.post('/upload', async (req, res) => {
 });
 
 // Serve uploaded files
-app.use('/downloads', express.static(path.join(__dirname, 'downloads')));
+app.use('/download', express.static(path.join(__dirname, 'downloads')));
 
 // Start the server
 app.listen(PORT, () => {
