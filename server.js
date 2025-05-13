@@ -80,12 +80,15 @@ app.get('/', (req, res) => {
                         display: inline-block;
                         margin-top: 10px;
                         text-decoration: none;
-                        background: #007bff;
                         color: white;
                         padding: 5px 10px;
                         border-radius: 4px;
                         font-size: 14px;
                     }
+                    .item a.btnd {
+                        background-color: #007bff;
+                    }
+
                 </style>
             </head>
             <body>
@@ -99,7 +102,7 @@ app.get('/', (req, res) => {
                                 <img src="/downloads/${file}" alt="${displayName}" />
                                 <p>${displayName}</p>
                             </a>
-                            <a href="/downloads/${file}" download>⬇️ Download</a>
+                            <a class=btnd href="/downloads/${file}" download>⬇️ Download</a>
                         </div>
                     `;
                 }).join('')}
