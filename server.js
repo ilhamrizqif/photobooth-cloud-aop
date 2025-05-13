@@ -118,14 +118,69 @@ app.get('/downloads-result/:file', (req, res) => {
     }
 
     const html = `
-        <h1>Download File</h1>
-        <p>Click the button below to download <strong>${file}</strong>:</p>
-        <a href="/downloads/${file}" download>
-            <button style="padding: 10px 20px; font-size: 16px;">⬇️ Download</button>
-        </a>
-        <br><br>
-        <a href="/">🔙 Back to file list</a>
-    `;
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>📂 Download Image</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background: #f4f4f4;
+                margin: 0;
+                padding: 40px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+            }
+            .container {
+                background: white;
+                padding: 30px;
+                border-radius: 10px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                text-align: center;
+                max-width: 600px;
+                width: 100%;
+            }
+            img {
+                max-width: 100%;
+                height: auto;
+                border-radius: 6px;
+                margin-bottom: 20px;
+            }
+            button {
+                padding: 10px 20px;
+                font-size: 16px;
+                background-color: #007bff;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+            a {
+                text-decoration: none;
+            }
+            .back-link {
+                display: block;
+                margin-top: 20px;
+                color: #333;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>📥 Download File</h1>
+            <img src="/downloads/${file}" alt="${file}" />
+            <p>Click the button below to download <strong>${file}</strong>:</p>
+            <a href="/downloads/${file}" download>
+                <button>⬇️ Download</button>
+            </a>
+            <a href="/" class="back-link">🔙 Go to Gallery</a>
+        </div>
+    </body>
+    </html>
+`;
     res.send(html);
 });
 // New endpoint: accepts multipart/form-data image
