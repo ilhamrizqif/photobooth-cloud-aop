@@ -38,15 +38,69 @@ app.get('/', (req, res) => {
     fs.readdir(dir, (err, files) => {
         if (err) return res.status(500).send('Failed to read directory.');
 
+        // Get full path and stats for sorting
+        const filesWithStats = files
+            .map(file => {
+                const filePath = path.join(dir, file);
+                const stat = fs.statSync(filePath);
+                return { file, time: stat.mtime };
+            })
+            .sort((a, b) => b.time - a.time); // sort by modified time, newest first
+
         const html = `
-            <h1>📂 Downloadable Images</h1>
-            <ul>
-                ${files.map(file => `
-                    <li>
-                        <a href="/download?file=${encodeURIComponent(file)}">${file}</a> 
-                        - <a href="/downloads/${file}" download>Direct Download</a>
-                    </li>`).join('')}
-            </ul>
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8" />
+                <title>📂 Downloadable Images</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        padding: 20px;
+                        background: #f4f4f4;
+                    }
+                    .gallery {
+                        display: grid;
+                        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                        gap: 20px;
+                    }
+                    .item {
+                        background: white;
+                        padding: 10px;
+                        border-radius: 8px;
+                        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                        text-align: center;
+                    }
+                    .item img {
+                        max-width: 100%;
+                        height: auto;
+                        border-radius: 4px;
+                    }
+                    .item a {
+                        display: inline-block;
+                        margin-top: 10px;
+                        text-decoration: none;
+                        background: #007bff;
+                        color: white;
+                        padding: 5px 10px;
+                        border-radius: 4px;
+                        font-size: 14px;
+                    }
+                </style>
+            </head>
+            <body>
+                <h1>📂 Downloadable Images</h1>
+                <div class="gallery">
+                    ${filesWithStats.map(({ file }) => `
+                        <div class="item">
+                            <img src="/downloads/${file}" alt="${file}" />
+                            <p>${file}</p>
+                            <a href="/downloads/${file}" download>⬇️ Download</a>
+                        </div>
+                    `).join('')}
+                </div>
+            </body>
+            </html>
         `;
         res.send(html);
     });
