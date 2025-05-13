@@ -107,7 +107,7 @@ app.get('/', (req, res) => {
 });
 
 // 📥 Download page with button
-app.get('/downloads', (req, res) => {
+app.get('/downloads-result', (req, res) => {
     const file = req.query.file;
     const filePath = path.join(__dirname, 'downloads', file);
 
@@ -135,7 +135,7 @@ app.post('/recieve-file', upload.single('image'), async (req, res) => {
         }
 
         const resultFilename = req.file.filename;
-        const downloadUrl = `https://server-photobooth.senimankode.id/downloads/${resultFilename}`;
+        const downloadUrl = `https://server-photobooth.senimankode.id/downloads-result/${resultFilename}`;
 
         // Generate QR code for download URL
         const qrCodeDataURL = await QRCode.toDataURL(downloadUrl);
