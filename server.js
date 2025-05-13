@@ -89,6 +89,11 @@ app.get('/', (req, res) => {
                     .item a.btnd {
                         background-color: #007bff;
                     }
+                    .item p {
+                        margin: 10px 0 5px;
+                        font-weight: bold;
+                        color: #333;
+                    }
 
                 </style>
             </head>
