@@ -8,7 +8,7 @@ This is an Express.js-based API that allows users to upload images either as bas
 ## 🚀 Features
 
 - Upload image via base64 (`POST /upload`)
-- Upload image via file (`POST /upload-file`)
+- Upload image via file (`POST /recieve-file`)
 - Automatically generates a QR code pointing to the download link
 - Serves uploaded files at `/downloads/<filename>`
 
