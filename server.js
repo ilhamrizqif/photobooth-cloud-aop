@@ -63,7 +63,7 @@ app.get('/', (req, res) => {
                     }
                     body {
                         font-family: 'NormsProRegular', Arial, sans-serif;
-                        background: linear-gradient(to right, #7f6bc6, #be72c2);
+                        background: url('/assets/bgphotobooth.webp') no-repeat center center fixed;
                         background-size: cover;
                     }
                     .gallery {
@@ -94,7 +94,7 @@ app.get('/', (req, res) => {
                         font-size: 14px;
                     }
                     .item a.btnd {
-                        background-color: #007bff;
+                        background-color: linear-gradient(to right, #7f6bc6, #be72c2);
                     }
                     .item p {
                         margin: 10px 0 5px;
@@ -150,7 +150,7 @@ app.get('/downloads-result/:file', (req, res) => {
             }
             body {
                 font-family: 'NormsProRegular', Arial, sans-serif;
-                background: linear-gradient(to right, #7f6bc6, #be72c2);
+                background:url('/assets/bgphotobooth.webp') no-repeat center center fixed;
                 background-size: cover;
                 margin: 0;
                 padding: 40px;
@@ -177,11 +177,12 @@ app.get('/downloads-result/:file', (req, res) => {
             button {
                 padding: 10px 20px;
                 font-size: 16px;
-                background-color: #007bff;
+                background-color: linear-gradient(to right, #7f6bc6, #be72c2);;
                 color: white;
                 border: none;
                 border-radius: 4px;
                 cursor: pointer;
+                round: 6px;
             }
             a {
                 text-decoration: none;
