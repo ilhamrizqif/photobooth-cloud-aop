@@ -195,7 +195,6 @@ app.get('/downloads-result/:file', (req, res) => {
     </head>
     <body>
         <div class="container">
-            <h1>📥 Download File</h1>
             <img src="/downloads/${file}" alt="${file}" />
             <p>Click the button below to download <strong>${file}</strong>:</p>
             <a href="/downloads/${file}" download>
