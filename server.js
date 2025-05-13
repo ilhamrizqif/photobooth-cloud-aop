@@ -94,11 +94,11 @@ app.get('/', (req, res) => {
                 ${filesWithStats.map(({ file }) => {
                     const displayName = file.replace(/^uploaded_image_/, ''); // remove the prefix
                     return `
-                        <div class="item">
+                        <a class="item" href="/downloads-result/:${file}">
                             <img src="/downloads/${file}" alt="${displayName}" />
                             <p>${displayName}</p>
                             <a href="/downloads/${file}" download>⬇️ Download</a>
-                        </div>
+                        </a>
                     `;
                 }).join('')}
                 </div>
