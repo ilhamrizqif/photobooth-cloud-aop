@@ -5,7 +5,7 @@ const path = require('path');
 const QRCode = require('qrcode'); 
 const multer = require('multer');
 // Ensure this package is installed
-const upload = multer({ storage });
+
 
 
 const app = express();
@@ -29,6 +29,7 @@ const storage = multer.diskStorage({
         cb(null, uniqueName);
     }
 });
+const upload = multer({ storage });
 
 
 // New endpoint: accepts multipart/form-data image
