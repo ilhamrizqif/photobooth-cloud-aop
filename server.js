@@ -135,6 +135,8 @@ app.get('/downloads-result/:file', (req, res) => {
     if (!file || !fs.existsSync(filePath)) {
         return res.status(404).send('File not found.');
     }
+    const displayName = file.replace(/^uploaded_image_/, '');
+
 
     const html = `
     <!DOCTYPE html>
@@ -196,13 +198,13 @@ app.get('/downloads-result/:file', (req, res) => {
     </head>
     <body>
         <div class="container">
-            <img src="/downloads/${file}" alt="${file}" />
-            <p>Click the button below to download <strong>${file}</strong>:</p>
-            <a href="/downloads/${file}" download>
-                <button>⬇️ Download</button>
-            </a>
-            <a href="/" class="back-link">🔙 Go to Gallery</a>
-        </div>
+        <img src="/downloads/${file}" alt="${file}" />
+        <p>Click the button below to download <strong>${displayName}</strong>:</p>
+        <a href="/downloads/${file}" download>
+            <button>⬇️ Download</button>
+        </a>
+        <a href="/" class="back-link">🔙 Go to Gallery</a>
+    </div>
     </body>
     </html>
 `;
