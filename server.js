@@ -93,7 +93,8 @@ app.get('/', (req, res) => {
                         font-size: 14px;
                     }
                     .item a.btnd {
-                        background-color: linear-gradient(to right, #7f6bc6, #be72c2);
+                        background: linear-gradient(to right, #7f6bc6, #be72c2);
+                        background-attachment: fixed;
                         color: black;
                         text-decoration: none;
                     }
@@ -176,7 +177,8 @@ app.get('/downloads-result/:file', (req, res) => {
             button {
                 padding: 10px 20px;
                 font-size: 16px;
-                background-color: linear-gradient(to right, #7f6bc6, #be72c2);;
+                background: linear-gradient(to right, #7f6bc6, #be72c2);
+                background-attachment: fixed;
                 color: black;
                 border: none;
                 border-radius: 4px;
