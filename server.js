@@ -95,6 +95,8 @@ app.get('/', (req, res) => {
                     }
                     .item a.btnd {
                         background-color: linear-gradient(to right, #7f6bc6, #be72c2);
+                        color: black;
+                        text-decoration: none;
                     }
                     .item p {
                         margin: 10px 0 5px;
@@ -105,7 +107,6 @@ app.get('/', (req, res) => {
                 </style>
             </head>
             <body>
-                <h1>📂 Downloadable Images</h1>
                 <div class="gallery">
                 ${filesWithStats.map(({ file }) => {
                     const displayName = file.replace(/^uploaded_image_/, '');
