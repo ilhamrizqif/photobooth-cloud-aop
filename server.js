@@ -97,6 +97,7 @@ app.get('/', (req, res) => {
                         background-attachment: fixed;
                         color: white;
                         text-decoration: none;
+                        border-radius: 12px;
                     }
                     .item p {
                         margin: 10px 0 5px;
@@ -155,13 +156,15 @@ app.get('/downloads-result/:file', (req, res) => {
             }
             body {
                 font-family: 'NormsProRegular', Arial, sans-serif;
-                background:url('/assets/clearbg.webp') no-repeat center center fixed;
+                background: url('/assets/clearbg.webp') no-repeat center center fixed;
                 background-size: cover;
+                margin: 0;
                 padding: 60px;
+                min-height: 100vh;
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                
+                box-sizing: border-box;
             }
             .container {
                 background: white;
@@ -185,7 +188,7 @@ app.get('/downloads-result/:file', (req, res) => {
                 background-attachment: fixed;
                 color: white;
                 border: none;
-                border-radius: 4px;
+                border-radius: 12px;
                 cursor: pointer;
                 round: 6px;
             }
