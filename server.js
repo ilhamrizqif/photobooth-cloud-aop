@@ -85,7 +85,6 @@ app.get('/', (req, res) => {
                     }
                     .item a {
                         display: inline-block;
-                        margin-top: 10px;
                         text-color: #333;
                         text-decoration: none;
                         color: white;
@@ -141,7 +140,6 @@ app.get('/downloads-result/:file', (req, res) => {
     <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <title>📂 Download Image</title>
         <style>
             @font-face {
                 font-family: 'NormsProRegular';
