@@ -156,7 +156,7 @@ app.get('/downloads-result/:file', (req, res) => {
         }
 
         html {
-            font-size: 32px; /* doubled from 16px */
+            font-size: 24px; /* doubled from 16px */
         }
 
         body {
@@ -164,8 +164,8 @@ app.get('/downloads-result/:file', (req, res) => {
             background: url('/assets/clearbg.webp') no-repeat center center fixed;
             background-size: cover;
             margin: 0;
-            padding: 120px; /* doubled */
-            min-height: 100vh;
+            padding: 50px; /* doubled */
+            min-height: 50vh;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -186,7 +186,7 @@ app.get('/downloads-result/:file', (req, res) => {
             max-width: 100%;
             height: auto;
             border-radius: 12px; /* doubled */
-            margin-bottom: 3rem; /* doubled */
+            margin-bottom: 1rem; /* doubled */
         }
 
         p {
@@ -195,7 +195,7 @@ app.get('/downloads-result/:file', (req, res) => {
         }
 
         button {
-            padding: 1.5rem 3rem; /* doubled */
+            padding: 0.5rem 1rem; /* doubled */
             font-size: 2rem; /* doubled */
             background: linear-gradient(to right, #7f6bc6, #be72c2);
             color: white;
