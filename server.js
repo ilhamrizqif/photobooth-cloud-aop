@@ -143,105 +143,105 @@ app.get('/downloads-result/:file', (req, res) => {
 
 
     const html = `
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <style>
-            @font-face {
-                font-family: 'NormsProRegular';
-                src: url('/assets/fonts/normsproregular.TTF') format('truetype');
-                font-weight: normal;
-                font-style: normal;
-            }
+   <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        @font-face {
+            font-family: 'NormsProRegular';
+            src: url('/assets/fonts/normsproregular.TTF') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
 
+        html {
+            font-size: 32px; /* doubled from 16px */
+        }
+
+        body {
+            font-family: 'NormsProRegular', Arial, sans-serif;
+            background: url('/assets/clearbg.webp') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 120px; /* doubled */
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background: white;
+            padding: 4rem; /* doubled */
+            border-radius: 20px; /* doubled */
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1); /* doubled */
+            text-align: center;
+            max-width: 1200px; /* doubled */
+            width: 100%;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px; /* doubled */
+            margin-bottom: 3rem; /* doubled */
+        }
+
+        p {
+            font-size: 2.2rem; /* doubled */
+            margin-bottom: 2rem; /* doubled */
+        }
+
+        button {
+            padding: 1.5rem 3rem; /* doubled */
+            font-size: 2rem; /* doubled */
+            background: linear-gradient(to right, #7f6bc6, #be72c2);
+            color: white;
+            border: none;
+            border-radius: 1.5rem; /* doubled */
+            cursor: pointer;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 3rem; /* doubled */
+            color: #333;
+            font-size: 1.9rem; /* doubled */
+        }
+
+        /* Responsive scaling */
+        @media (max-width: 480px) {
             html {
-                font-size: 16px; /* base size, scales well */
-            }
-
-            body {
-                font-family: 'NormsProRegular', Arial, sans-serif;
-                background: url('/assets/clearbg.webp') no-repeat center center fixed;
-                background-size: cover;
-                margin: 0;
-                padding: 60px;
-                min-height: 100vh;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                box-sizing: border-box;
+                font-size: 28px; /* adjusted for mobile, still upscaled */
             }
 
             .container {
-                background: white;
-                padding: 2rem;
-                border-radius: 10px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-                text-align: center;
-                max-width: 600px;
-                width: 100%;
-            }
-
-            img {
-                max-width: 100%;
-                height: auto;
-                border-radius: 6px;
-                margin-bottom: 1.5rem;
-            }
-
-            p {
-                font-size: 1.1rem;
-                margin-bottom: 1rem;
+                padding: 3rem; /* adjusted */
             }
 
             button {
-                padding: 0.75rem 1.5rem;
-                font-size: 1rem;
-                background: linear-gradient(to right, #7f6bc6, #be72c2);
-                color: white;
-                border: none;
-                border-radius: 0.75rem;
-                cursor: pointer;
+                font-size: 1.8rem;
             }
-
-            a {
-                text-decoration: none;
-            }
-
-            .back-link {
-                display: block;
-                margin-top: 1.5rem;
-                color: #333;
-                font-size: 0.95rem;
-            }
-
-            /* Responsive scaling */
-            @media (max-width: 480px) {
-                html {
-                    font-size: 14px;
-                }
-
-                .container {
-                    padding: 1.5rem;
-                }
-
-                button {
-                    font-size: 0.9rem;
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-        <img src="/downloads/${file}" alt="${file}" />
-        <p>Click the button below to download image:</p>
-        <a href="/downloads/${file}" download>
-            <button>⬇️ Download</button>
-        </a>
-        <a href="/" class="back-link">🔙 Go to Gallery</a>
-    </div>
-    </body>
-    </html>
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+    <img src="/downloads/${file}" alt="${file}" />
+    <p>Click the button below to download image:</p>
+    <a href="/downloads/${file}" download>
+        <button>⬇️ Download</button>
+    </a>
+    <a href="/" class="back-link">🔙 Go to Gallery</a>
+</div>
+</body>
+</html>
 `;
     res.send(html);
 });
