@@ -16,7 +16,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '22.x'  # You can change this to your required Node version
+          node-version: '22.x'
 
       - name: Deploy Application
         uses: appleboy/ssh-action@v0.1.7
