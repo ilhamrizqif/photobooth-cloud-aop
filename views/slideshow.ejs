@@ -90,6 +90,20 @@
 
     // Start auto loop
     setInterval(nextSlide, 3000); // change every 5 seconds
+
+    const socket = new WebSocket(`wss://server-photobooth.senimankode.id`);
+
+  socket.onmessage = function(event) {
+    const data = JSON.parse(event.data);
+    if (data.type === 'new_image') {
+      const newSlide = document.createElement('img');
+      newSlide.src = `/downloads/${data.file}`;
+      newSlide.className = 'slide';
+      document.querySelector('.slideshow-container').appendChild(newSlide);
+
+      slides = document.querySelectorAll('.slide');
+    }
+  };
   </script>
 </body>
 </html>

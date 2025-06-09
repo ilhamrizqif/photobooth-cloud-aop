@@ -4,6 +4,8 @@ const fs = require('fs');
 const path = require('path');
 const QRCode = require('qrcode');
 const multer = require('multer');
+const WebSocket = require('ws');
+const http = require('http');
 const app = express();
 const PORT = 3265;
 
@@ -11,6 +13,17 @@ app.use(bodyParser.json({ limit: '50mb' }));
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
+
+function broadcastNewImage(fileName) {
+  const message = JSON.stringify({ type: 'new_image', file: fileName });
+  wss.clients.forEach(client => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(message);
+    }
+  });
+}
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -101,7 +114,7 @@ app.post('/upload', async (req, res) => {
             download_url: downloadUrl,
             message: 'File successfully uploaded and processed.',
         };
-
+        broadcastNewImage(resultFilename);
         // Send the response
         res.status(201).json(response);
     } catch (error) {
