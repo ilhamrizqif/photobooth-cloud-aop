@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>📽️ Slideshow</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+      background: url('/assets/bgPotrait.webp') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    .overlay {
+      background-color: rgba(0, 0, 0, 0.6);
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+
+    .slideshow-container {
+      position: relative;
+      height: 100%;
+      width: 100%;
+      z-index: 2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .slide {
+      position: absolute;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+      max-height: 90%;
+      max-width: 90%;
+      object-fit: contain;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(255,255,255,0.4);
+    }
+  .logo-header {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  text-align: center;
+}
+
+.logo-header img {
+  width: 300px;
+  max-width: 90vw;
+}
+    .slide.visible {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+  <div class="logo-header">
+            <img src="/assets/logoBcaData.webp" alt="Logo" />
+        </div>
+  <div class="slideshow-container">
+    <% imageFiles.forEach((file, index) => { %>
+      <img src="/downloads/<%= file %>" class="slide <%= index === 0 ? 'visible' : '' %>" alt="Slide <%= index + 1 %>">
+    <% }) %>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    let current = 0;
+
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('visible', i === index);
+      });
+    }
+
+    function nextSlide() {
+      current = (current + 1) % slides.length;
+      showSlide(current);
+    }
+
+    // Start auto loop
+    setInterval(nextSlide, 3000); // change every 5 seconds
+  </script>
+</body>
+</html>

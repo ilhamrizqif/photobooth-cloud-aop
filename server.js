@@ -125,6 +125,11 @@ app.delete('/delete/:file', (req, res) => {
         res.json({ message: 'File deleted successfully.' });
     });
 });
+app.get('/slideshow', (req, res) => {
+    const imageFiles = fs.readdirSync(path.join(__dirname, 'downloads'))
+        .filter(file => /\.(png|jpe?g|webp)$/i.test(file));
+    res.render('slideshow', { imageFiles });
+});
 app.use('/download', express.static(path.join(__dirname, 'downloads')));
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
