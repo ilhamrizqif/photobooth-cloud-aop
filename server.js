@@ -1,11 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
-const path = require('path');
 const QRCode = require('qrcode');
 const multer = require('multer');
 const WebSocket = require('ws');
 const http = require('http');
+const path = require('path');
+
 const app = express();
 const PORT = 3265;
 
@@ -44,12 +45,24 @@ app.use('/downloads', express.static(path.join(__dirname, 'downloads')));
 app.get('/', (req, res) => {
     res.status(404).render('404'); 
 });
-app.get('/gallery', (req, res) => {
-    const filesWithStats = fs.readdirSync(path.join(__dirname, 'downloads'))
-        .filter(file => /\.(png|jpe?g|webp)$/i.test(file))
-        .map(file => ({ file }));
+app.get('/gallery', async (req, res) => {
+  try {
+    const downloadsDir = path.join(__dirname, 'downloads');
+    const files = fs.readdirSync(downloadsDir).filter(file => /\.(png|jpe?g|webp)$/i.test(file));
 
-    res.render('mainMenu', { filesWithStats });
+    // Generate QR codes for each file (async)
+    const filesWithQRCodes = await Promise.all(files.map(async file => {
+      const downloadUrl = `${req.protocol}://${req.get('host')}/downloads/${file}`;
+      previewUrl = `${req.protocol}://${req.get('host')}/downloads-result/${file}`;
+      const qrDataUrl = await QRCode.toDataURL(previewUrl, { errorCorrectionLevel: 'H' });
+      return { file, qrDataUrl };
+    }));
+
+    res.render('mainMenu', { filesWithQRCodes });
+  } catch (error) {
+    console.error('Error loading gallery:', error);
+    res.status(500).send('Internal Server Error');
+  }
 });
 app.get('/downloads-result/:file', (req, res) => {
   const file = req.params.file;
