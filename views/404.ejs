@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Page Not Found</title>
+  <style>
+    @font-face {
+      font-family: 'NormsProRegular';
+      src: url('/assets/fonts/normsproregular.TTF') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      font-family: 'NormsProRegular', Arial, sans-serif;
+      background: url('/assets/bgPotrait.webp') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+    }
+
+    .container {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 3rem;
+      border-radius: 20px;
+      max-width: 600px;
+      width: 90%;
+    }
+
+    h1 {
+      font-size: 48px;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: 18px;
+      margin-bottom: 1rem;
+    }
+
+    a {
+      color: #fff;
+      background: linear-gradient(to right, #0a1b50, #1b97c1);
+      padding: 10px 20px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    a:hover {
+      background: linear-gradient(to right, #1b97c1, #0a1b50);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>404</h1>
+    <p>Oops! Page not found.</p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>📂 Downloadable Images</title>
+    <style>
+        @font-face {
+            font-family: 'NormsProRegular';
+            src: url('/assets/fonts/normsproregular.TTF') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'NormsProRegular', Arial, sans-serif;
+            background: url('/assets/bgPotrait.webp') no-repeat center center fixed;
+            background-size: cover;
+            box-sizing: border-box;
+        }
+
+        .page-wrapper {
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .logo-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-header img {
+            width: 400px;
+            max-width: 90vw;
+        }
+
+        .scroll-container {
+            flex: 1;
+            width: 100%;
+            max-width: 90vw;
+            overflow-y: scroll;
+            box-sizing: border-box;
+            scrollbar-width: thin;
+            scrollbar-color: #888 transparent;
+        }
+
+        .scroll-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .scroll-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .scroll-container::-webkit-scrollbar-thumb {
+            background-color: #888;
+            border-radius: 4px;
+        }
+
+        .scroll-container::-webkit-scrollbar-thumb:hover {
+            background-color: #555;
+        }
+
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 10px 0 20px 0;
+        }
+
+        .item {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .item img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+
+        .item a {
+            display: inline-block;
+            text-decoration: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .item a.btnd {
+            background: linear-gradient(to right, #0a1b50, #1b97c1);
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 12px;
+            margin-top: 10px;
+        }
+        .item button.btndel {
+            background: linear-gradient(to right, #ff0000, #670a0a);
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 12px;
+            margin-top: 10px;
+        }
+
+        .item p {
+            margin: 10px 0 5px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+  
+
+</head>
+
+<body>
+    <div class="page-wrapper">
+        <div class="logo-header">
+            <img src="/assets/logoBcaData.webp" alt="Logo" />
+        </div>
+
+        <div class="scroll-container">
+            <div class="gallery">
+                <% filesWithStats.forEach(({ file })=> {
+                    const displayName = file.replace(/^uploaded_image_/, '');
+                    %>
+                    <div class="item">
+                        <a href="/downloads-result/<%= file %>">
+                            <img src="/downloads/<%= file %>" alt="<%= displayName %>" />
+                            <p>Action:</p>
+                        </a>
+                        <a class="btnd" href="/downloads/<%= file %>" download>⬇️ Download</a>
+                        <button class="btndel delete-btn" data-file="<%= file %>">Delete</button>
+                    </div>
+                    <% }) %>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+  document.querySelectorAll('.delete-btn').forEach(button => {
+      button.addEventListener('click', async () => {
+          const file = button.getAttribute('data-file');
+          if (confirm(`Are you sure you want to delete ${file}?`)) {
+              try {
+                  const response = await fetch(`/delete/${file}`, {
+                      method: 'DELETE',
+                  });
+
+                  if (response.ok) {
+                      alert('File deleted successfully!');
+                      const item = document.getElementById(`item-${file}`);
+                      if (item) item.remove();
+                      window.location.reload();
+                  } else {
+                      const data = await response.json();
+                      alert('Failed to delete file: ' + data.message);
+                  }
+              } catch (err) {
+                  alert('Error deleting file.');
+                  console.error(err);
+              }
+          }
+      });
+  });
+</script>
+</html>

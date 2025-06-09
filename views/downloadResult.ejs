@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Download Page</title>
+
+  <!-- ✅ Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    @font-face {
+      font-family: 'NormsProRegular';
+      src: url('/assets/fonts/normsproregular.TTF') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    html {
+      font-size: 24px;
+    }
+
+    body {
+      font-family: 'NormsProRegular', Arial, sans-serif;
+      background: url('/assets/bgPotrait.webp') no-repeat center center fixed;
+      background-size: cover;
+      min-height: 105vh;
+      overflow-x: hidden;
+    }
+
+    boday::before,
+    boday::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      width: 180%;
+      height: 35%;
+      z-index: -1;
+      transform: translateX(-50%);
+    }
+
+    boday::before {
+      top: -15%;
+      border-bottom-left-radius: 100%;
+      border-bottom-right-radius: 100%;
+      background-image:
+        radial-gradient(circle at 80% 40%, #5AF0E8 0%, rgba(90, 240, 232, 0) 40%),
+        linear-gradient(135deg, #069E96, #0055B3);
+    }
+
+    boday::after {
+      bottom: -15%;
+      border-top-left-radius: 100%;
+      border-top-right-radius: 100%;
+      background-image:
+        radial-gradient(circle at 20% 60%, #00D4FF 0%, rgba(0, 212, 255, 0) 40%),
+        linear-gradient(315deg, #003A7C, #0055B3);
+    }
+
+    .container {
+      background: white;
+      padding: 4rem;
+      border-radius: 20px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 100vh;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: 2.2rem;
+      margin-bottom: 2rem;
+    }
+
+    button {
+      padding: 0.5rem 1rem;
+      font-size: 2rem;
+      background: linear-gradient(to right, #0a1b50, #1b97c1);
+      color: white;
+      border: none;
+      border-radius: 1.5rem;
+      padding: 30px 40px;
+      cursor: pointer;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    .back-link {
+      display: block;
+      margin-top: 3rem;
+      color: #333;
+      font-size: 1.9rem;
+    }
+    .btnd {
+  background: linear-gradient(to right, #0a1b50, #1b97c1);
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 1.5rem;
+  padding: 30px 40px;
+  cursor: pointer;
+  font-size: 2rem;
+}
+
+
+    @media (max-width: 480px) {
+      html {
+        font-size: 28px;
+      }
+      .container {
+        padding: 3rem;
+      }
+      button {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body class="relative ">
+  <div class="flex justify-center justify-items-center items-center min-h-screen mx-auto p-10 sm:p-12 -mt-10 ">
+    <div class="bg-white rounded-lg shadow-lg text-center max-w-xl w-full p-10">
+      <img src="/downloads/<%= file %>" alt="<%= file %>" />
+      <p class="text-gray-800 font-bold">Click the button below to download image:</p>
+      <a href="/downloads/<%= file %>" download>
+        <button class="btnd transition hover:brightness-110">⬇️ Download</button>
+      </a>
+    </div>
+  </div>
+</body>
+
+</html>
