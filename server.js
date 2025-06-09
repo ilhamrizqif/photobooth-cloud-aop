@@ -2,20 +2,16 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
-const QRCode = require('qrcode'); 
+const QRCode = require('qrcode');
 const multer = require('multer');
-// Ensure this package is installed
-
-
-
 const app = express();
 const PORT = 3265;
 
-// Middleware to parse JSON requests
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
-// Set up multer storage
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         const uploadDir = path.join(__dirname, 'downloads');
@@ -32,220 +28,24 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 app.use('/downloads', express.static(path.join(__dirname, 'downloads')));
-
-// 🌐 Root route: list all downloadable images
 app.get('/', (req, res) => {
-    const dir = path.join(__dirname, 'downloads');
-    fs.readdir(dir, (err, files) => {
-        if (err) return res.status(500).send('Failed to read directory.');
-
-        // Get full path and stats for sorting
-        const filesWithStats = files
-            .map(file => {
-                const filePath = path.join(dir, file);
-                const stat = fs.statSync(filePath);
-                return { file, time: stat.mtime };
-            })
-            .sort((a, b) => b.time - a.time); // sort by modified time, newest first
-
-        const html = `
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8" />
-                <title>📂 Downloadable Images</title>
-                <style>
-                    @font-face {
-                        font-family: 'NormsProRegular';
-                        src: url('/assets/fonts/normsproregular.TTF') format('truetype');
-                        font-weight: normal;
-                        font-style: normal;
-                    }
-                    body {
-                        font-family: 'NormsProRegular', Arial, sans-serif;
-                        background: url('/assets/clearbg.webp') no-repeat center center fixed;
-                        background-size: cover;
-                    }
-                    .gallery {
-                        display: grid;
-                        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                        gap: 20px;
-                    }
-                    .item {
-                        background: white;
-                        padding: 10px;
-                        border-radius: 8px;
-                        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-                        text-align: center;
-                    }
-                    .item img {
-                        max-width: 100%;
-                        height: auto;
-                        border-radius: 4px;
-                    }
-                    .item a {
-                        display: inline-block;
-                        text-color: #333;
-                        text-decoration: none;
-                        color: white;
-                        padding: 5px 10px;
-                        border-radius: 4px;
-                        font-size: 14px;
-                    }
-                    .item a.btnd {
-                        background: linear-gradient(to right, #7f6bc6, #be72c2);
-                        background-attachment: fixed;
-                        color: white;
-                        text-decoration: none;
-                        border-radius: 12px;
-                    }
-                    .item p {
-                        margin: 10px 0 5px;
-                        font-weight: bold;
-                        color: #333;
-                    }
-
-                </style>
-            </head>
-            <body>
-                <div style="text-align: center; color: white;">
-                <img src="/assets/logojudul.webp" alt="Logo" style="width: 400px; margin-bottom: 20px;" />
-                </div>
-                <div class="gallery">
-                ${filesWithStats.map(({ file }) => {
-                    const displayName = file.replace(/^uploaded_image_/, '');
-                    return `
-                        <div class="item">
-                            <a href="/downloads-result/${file}">
-                                <img src="/downloads/${file}" alt="${displayName}" />
-                                <p>Click here to download:</p>
-                            </a>
-                            <a class=btnd href="/downloads/${file}" download>⬇️ Download</a>
-                        </div>
-                    `;
-                }).join('')}
-                </div>
-            </body>
-            </html>
-        `;
-        res.send(html);
-    });
+    res.status(404).render('404'); 
 });
+app.get('/gallery', (req, res) => {
+    const filesWithStats = fs.readdirSync(path.join(__dirname, 'downloads'))
+        .filter(file => /\.(png|jpe?g|webp)$/i.test(file))
+        .map(file => ({ file }));
 
+    res.render('mainMenu', { filesWithStats });
+});
 app.get('/downloads-result/:file', (req, res) => {
-    const file = req.params.file;
-    const filePath = path.join(__dirname, 'downloads', file);
-
-    if (!file || !fs.existsSync(filePath)) {
-        return res.status(404).send('File not found.');
-    }
-    const displayName = file.replace(/^uploaded_image_/, '');
-
-
-    const html = `
-   <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <style>
-        @font-face {
-            font-family: 'NormsProRegular';
-            src: url('/assets/fonts/normsproregular.TTF') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-        }
-
-        html {
-            font-size: 24px; /* doubled from 16px */
-        }
-
-        body {
-            font-family: 'NormsProRegular', Arial, sans-serif;
-            background: url('/assets/clearbg.webp') no-repeat center center fixed;
-            background-size: cover;
-            margin: 0;
-            padding: 50px; /* doubled */
-            min-height: 50vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-sizing: border-box;
-        }
-
-        .container {
-            background: white;
-            padding: 4rem; /* doubled */
-            border-radius: 20px; /* doubled */
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1); /* doubled */
-            text-align: center;
-            max-width: 1200px; /* doubled */
-            width: 100%;
-        }
-
-        img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 12px; /* doubled */
-            margin-bottom: 1rem; /* doubled */
-        }
-
-        p {
-            font-size: 2.2rem; /* doubled */
-            margin-bottom: 2rem; /* doubled */
-        }
-
-        button {
-            padding: 0.5rem 1rem; /* doubled */
-            font-size: 2rem; /* doubled */
-            background: linear-gradient(to right, #7f6bc6, #be72c2);
-            color: white;
-            border: none;
-            border-radius: 1.5rem; /* doubled */
-            cursor: pointer;
-        }
-
-        a {
-            text-decoration: none;
-        }
-
-        .back-link {
-            display: block;
-            margin-top: 3rem; /* doubled */
-            color: #333;
-            font-size: 1.9rem; /* doubled */
-        }
-
-        /* Responsive scaling */
-        @media (max-width: 480px) {
-            html {
-                font-size: 28px; /* adjusted for mobile, still upscaled */
-            }
-
-            .container {
-                padding: 3rem; /* adjusted */
-            }
-
-            button {
-                font-size: 1.8rem;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-    <img src="/downloads/${file}" alt="${file}" />
-    <p>Click the button below to download image:</p>
-    <a href="/downloads/${file}" download>
-        <button>⬇️ Download</button>
-    </a>
-    <a href="/" class="back-link">🔙 Go to Gallery</a>
-</div>
-</body>
-</html>
-`;
-    res.send(html);
+  const file = req.params.file;
+  const filePath = path.join(__dirname, 'downloads', file);
+  if (!file || !fs.existsSync(filePath)) {
+    return res.status(404).send('File not found.');
+  }
+  res.render('downloadResult', { file });
 });
-// New endpoint: accepts multipart/form-data image
 app.post('/recieve-file', upload.single('image'), async (req, res) => {
     try {
         if (!req.file) {
@@ -271,8 +71,6 @@ app.post('/recieve-file', upload.single('image'), async (req, res) => {
         res.status(500).json({ message: 'File upload failed.', error: error.message });
     }
 });
-
-// Route to handle image upload
 app.post('/upload', async (req, res) => {
     try {
         const { image } = req.body;
@@ -311,11 +109,23 @@ app.post('/upload', async (req, res) => {
         res.status(500).json({ message: 'Failed to upload image.', error: error.message });
     }
 });
+app.delete('/delete/:file', (req, res) => {
+    const file = req.params.file;
+    const filePath = path.join(__dirname, 'downloads', file);
 
-// Serve uploaded files
+    if (!file || !fs.existsSync(filePath)) {
+        return res.status(404).json({ message: 'File not found.' });
+    }
+
+    fs.unlink(filePath, (err) => {
+        if (err) {
+            console.error('Error deleting file:', err);
+            return res.status(500).json({ message: 'Failed to delete file.' });
+        }
+        res.json({ message: 'File deleted successfully.' });
+    });
+});
 app.use('/download', express.static(path.join(__dirname, 'downloads')));
-
-// Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
