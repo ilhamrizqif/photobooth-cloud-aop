@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>Download Page</title>
@@ -57,7 +58,10 @@
     }
 
     .container {
-      background: white;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid #00f0ff;
+      box-shadow: 0 0 15px #00f0ff, 0 0 30px #00f0ff;
+      backdrop-filter: blur(20px);
       padding: 4rem;
       border-radius: 20px;
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
@@ -98,36 +102,46 @@
       color: #333;
       font-size: 1.9rem;
     }
+
     .btnd {
-  background: linear-gradient(to right, #0a1b50, #1b97c1);
-  color: white;
-  font-weight: bold;
-  border: none;
-  border-radius: 1.5rem;
-  padding: 30px 40px;
-  cursor: pointer;
-  font-size: 2rem;
-}
+      background: linear-gradient(to right, #0a1b50, #1b97c1);
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 1.5rem;
+      padding: 30px 40px;
+      cursor: pointer;
+      font-size: 2rem;
+    }
 
 
     @media (max-width: 480px) {
       html {
         font-size: 28px;
       }
+
       .container {
         padding: 3rem;
       }
+
       button {
         font-size: 1.8rem;
       }
     }
   </style>
 </head>
+
 <body class="relative ">
   <div class="flex justify-center justify-items-center items-center min-h-screen mx-auto p-10 sm:p-12 -mt-10 ">
-    <div class="bg-white rounded-lg shadow-lg text-center max-w-xl w-full p-10">
+    <div class=" rounded-lg shadow-lg text-center max-w-xl w-full p-10" style="
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid #00f0ff;
+  box-shadow: 0 0 15px #00f0ff, 0 0 30px #00f0ff;
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+">
       <img src="/downloads/<%= file %>" alt="<%= file %>" />
-      <p class="text-gray-800 font-bold">Click the button below to download image:</p>
+      <p class="text-white font-bold">Click the button below to download image:</p>
       <a href="/downloads/<%= file %>" download>
         <button class="btnd transition hover:brightness-110">⬇️ Download</button>
       </a>
