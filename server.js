@@ -6,10 +6,12 @@ const multer = require('multer');
 const WebSocket = require('ws');
 const http = require('http');
 const path = require('path');
+const cors = require('cors');
+
 
 const app = express();
 const PORT = 3265;
-
+app.use(cors());
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.set('view engine', 'ejs');
