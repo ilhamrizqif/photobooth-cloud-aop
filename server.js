@@ -100,6 +100,8 @@ app.post('/recieve-file', upload.single('image'), async (req, res) => {
     }
 });
 app.post('/upload', async (req, res) => {
+    console.log('Received upload request');
+    // Validate request body
     try {
         const { image } = req.body;
         if (!image) {
