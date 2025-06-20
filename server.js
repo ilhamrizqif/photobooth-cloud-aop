@@ -162,5 +162,5 @@ app.get('/slideshow', (req, res) => {
 });
 app.use('/download', express.static(path.join(__dirname, 'downloads')));
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`Server is running on Port:${PORT}`);
 });
