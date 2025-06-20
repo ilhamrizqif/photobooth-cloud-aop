@@ -7,8 +7,6 @@ const WebSocket = require('ws');
 const http = require('http');
 const path = require('path');
 const cors = require('cors');
-
-
 const app = express();
 const PORT = 3265;
 app.use(cors());
