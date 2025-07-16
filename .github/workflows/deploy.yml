@@ -27,7 +27,7 @@ jobs:
           port: 22
           script: |
             # Ensure npm and node are in the PATH
-            export PATH=$PATH:/home/${{ secrets.AI_USER }}/.nvm/versions/node/v22.17.0/bin
+            export PATH=$PATH:/home/${{ secrets.AIBYD_USER }}/.nvm/versions/node/v22.17.0/bin
 
             # Check if npm is available
             which npm || { echo "npm not found"; exit 1; }
