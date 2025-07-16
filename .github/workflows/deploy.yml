@@ -21,13 +21,13 @@ jobs:
       - name: Deploy Application
         uses: appleboy/ssh-action@v0.1.7
         with:
-          host: ${{ secrets.AI_HOST }}
-          username: ${{ secrets.AI_USER }}
-          password: ${{ secrets.AI_PASSWORD }}
+          host: ${{ secrets.AIBYD_HOST }}
+          username: ${{ secrets.AIBYD_USER }}
+          password: ${{ secrets.AIBYD_PASSWORD }}
           port: 22
           script: |
             # Ensure npm and node are in the PATH
-            export PATH=$PATH:/home/${{ secrets.AI_USER }}/.nvm/versions/node/v22.16.0/bin
+            export PATH=$PATH:/home/${{ secrets.AI_USER }}/.nvm/versions/node/v22.17.0/bin
 
             # Check if npm is available
             which npm || { echo "npm not found"; exit 1; }
@@ -35,7 +35,7 @@ jobs:
             echo "Starting deployment process..."
 
             # Navigate to the application's directory
-            cd /home/senimankode-server-photobooth/htdocs/server-photobooth.senimankode.id/photobooth-cloud || exit
+            cd /home/buildyourdreams-cloud-photobooth/htdocs/cloud-photobooth.buildyourdreams.live/photobooth-cloud || exit
 
             # Pull the latest changes from the GitHub repository
             git pull origin main

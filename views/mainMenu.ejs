@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <head>
     <meta charset="UTF-8" />
     <title>📂 Downloadable Images</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         @font-face {
             font-family: 'NormsProRegular';
@@ -18,7 +18,7 @@
             margin: 0;
             padding: 0;
             height: 100vh;
-            overflow: hidden;
+            /* overflow: hidden; */
             font-family: 'NormsProRegular', Arial, sans-serif;
             background: url('/assets/bgvf6.webp') no-repeat center center fixed;
             background-size: cover;
@@ -49,7 +49,7 @@
             flex: 1;
             width: 100%;
             max-width: 90vw;
-            overflow-y: scroll;
+            overflow-y: auto;
             box-sizing: border-box;
             scrollbar-width: thin;
             scrollbar-color: #888 transparent;
@@ -72,7 +72,6 @@
             background-color: #555;
         }
 
-
         .gallery {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -82,17 +81,12 @@
 
         .item {
             background: rgba(255, 255, 255, 0.1);
-            /* semi-transparent white */
             border: 2px solid #00f0ff;
-            /* bright blue border */
             box-shadow: 0 0 15px #00f0ff, 0 0 30px #00f0ff;
-            /* neon glow effect */
             backdrop-filter: blur(20px);
-            /* optional: frosted glass effect */
             color: white;
             padding: 10px;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
 
@@ -110,9 +104,6 @@
             border-radius: 4px;
             font-size: 14px;
         }
-
-
-
 
         .item a.btnd {
             background: linear-gradient(to right, #0a1b50, #1b97c1);
@@ -151,6 +142,25 @@
             font-weight: bold;
             color: white;
         }
+
+        /* Skeleton loading effect */
+        .skeleton {
+            background: linear-gradient(-90deg, #ffffff 0%, #9f9f9f 50%, #eeeeee96 100%);
+            background-size: 400% 400%;
+            animation: shimmer 1.2s ease-in-out infinite;
+            border-radius: 8px;
+            height: 200px;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 100% 0;
+            }
+
+            100% {
+                background-position: -100% 0;
+            }
+        }
     </style>
 </head>
 
@@ -161,33 +171,17 @@
         </div>
 
         <div class="scroll-container">
-            <div class="gallery">
-                <% filesWithQRCodes.forEach(({ file, qrDataUrl })=> {
-                    const displayName = file.replace(/^uploaded_image_/, '');
-                    %>
-                    <div class="item">
-                        <a href="/downloads-result/<%= file %>">
-                            <img src="/downloads/<%= file %>" alt="<%= displayName %>" />
-                            <p class="p">Action:</p>
-                        </a>
-                        <a class="btnd" href="/downloads/<%= file %>" download>⬇️ Download</a>
-                        <button class="btndel delete-btn" data-file="<%= file %>">Delete</button>
-
-                        <!-- Store QR code data URL in button attribute -->
-                        <button class="btndQ show-qr-modal-btn" data-qr="<%= qrDataUrl %>"
-                            data-name="<%= displayName %>">Show QR</button>
-                    </div>
-                    <% }) %>
-            </div>
+            <div id="gallery" class="gallery"></div>
         </div>
     </div>
-    <!-- QR Code Modal -->
+
+    <!-- QR Modal -->
     <div id="qrModal" style="
         display:none;
         position: fixed;
         z-index: 1000;
         left: 0; top: 0; right:0; bottom: 0;
-        background: rgba(0,0,0,0.7);
+        background: rgb(255, 255, 255);
         justify-content: center;
         align-items: center;
         ">
@@ -199,93 +193,156 @@
         text-align: center;
         position: relative;
     ">
-        <button id="closeModal" style="
+            <button id="closeModal" style="
             position: absolute;
             top: 10px; right: 10px;
             font-size: 20px;
             border: none;
             background: transparent;
-            cursor: pointer;
-            ">✖
-        </button>
+            cursor: pointer;">✖</button>
             <h3 id="modalTitle"></h3>
             <img id="modalQR" src="" alt="QR Code" style="max-width: 100%; height: auto; margin-top: 10px;" />
         </div>
     </div>
 
-</body>
-<script>
-    const qrModal = document.getElementById('qrModal');
-    const modalQR = document.getElementById('modalQR');
-    const modalTitle = document.getElementById('modalTitle');
-    const closeModalBtn = document.getElementById('closeModal');
+    <script>
+        const filesWithQRCodes = <%- JSON.stringify(filesWithQRCodes) %>;
 
-    document.querySelectorAll('.show-qr-modal-btn').forEach(button => {
-        button.addEventListener('click', () => {
-            const qrDataUrl = button.getAttribute('data-qr');
-            const name = button.getAttribute('data-name');
+        const gallery = document.getElementById('gallery');
+        const chunkSize = 5;
+        let currentIndex = 0;
 
-            modalQR.src = qrDataUrl;
-            modalTitle.textContent = `QR Code for ${name}`;
-            qrModal.style.display = 'flex';
-        });
-    });
+        const qrModal = document.getElementById('qrModal');
+        const modalQR = document.getElementById('modalQR');
+        const modalTitle = document.getElementById('modalTitle');
+        const closeModalBtn = document.getElementById('closeModal');
 
-    closeModalBtn.addEventListener('click', () => {
-        qrModal.style.display = 'none';
-        modalQR.src = '';  // Clear the QR image
-    });
+        function createSkeletonItem() {
+            const div = document.createElement('div');
+            div.className = 'item';
+            div.innerHTML = `<div class="skeleton"></div><p>Loading...</p>`;
+            return div;
+        }
 
-    // Also close modal when clicking outside the modal content
-    qrModal.addEventListener('click', (e) => {
-        if (e.target === qrModal) {
+        function createGalleryItem({ file, qrDataUrl }) {
+            const displayName = file.replace(/^uploaded_image_/, '');
+            const div = document.createElement('div');
+            div.className = 'item';
+            div.innerHTML = `
+                <a href="/downloads-result/${file}">
+                    <div class="skeleton"></div>
+                    <img src="/downloads/${file}" alt="${displayName}" style="display: none;" />
+                    <p class="p">Action:</p>
+                </a>
+                <a class="btnd" href="/downloads/${file}" download>⬇️ Download</a>
+                <button class="btndel delete-btn" data-file="${file}">Delete</button>
+                <button class="btndQ show-qr-modal-btn" data-qr="${qrDataUrl}" data-name="${displayName}">Show QR</button>
+            `;
+
+            const img = div.querySelector('img');
+            const skeleton = div.querySelector('.skeleton');
+            img.onload = () => {
+                skeleton.remove();
+                img.style.display = 'block';
+            };
+
+            return div;
+        }
+
+        function loadNextChunk() {
+            const chunk = filesWithQRCodes.slice(currentIndex, currentIndex + chunkSize);
+            chunk.forEach(item => {
+                const skeleton = createSkeletonItem();
+                gallery.appendChild(skeleton);
+
+                setTimeout(() => {
+                    const fullItem = createGalleryItem(item);
+                    gallery.replaceChild(fullItem, skeleton);
+                    attachEventListeners(fullItem);
+                }, 400 + Math.random() * 300);
+            });
+            currentIndex += chunkSize;
+        }
+
+        function loadUntilScrollable() {
+            const container = document.querySelector('.scroll-container');
+            const maxInitialLoads = 10; // prevent infinite loop if short content
+            let tries = 0;
+
+            function tryLoad() {
+                if (currentIndex < filesWithQRCodes.length && container.scrollHeight <= container.clientHeight && tries < maxInitialLoads) {
+                    loadNextChunk();
+                    tries++;
+                    setTimeout(tryLoad, 100); // wait for DOM update
+                }
+            }
+
+            tryLoad();
+        }
+
+        loadNextChunk();
+        loadUntilScrollable();
+
+        function attachEventListeners(item) {
+            const deleteBtn = item.querySelector('.delete-btn');
+            const qrBtn = item.querySelector('.show-qr-modal-btn');
+
+            if (deleteBtn) {
+                deleteBtn.addEventListener('click', async () => {
+                    const file = deleteBtn.getAttribute('data-file');
+                    if (confirm(`Are you sure you want to delete ${file}?`)) {
+                        try {
+                            const response = await fetch(`/delete/${file}`, { method: 'DELETE' });
+                            if (response.ok) {
+                                alert('File deleted successfully!');
+                                item.remove();
+                            } else {
+                                const data = await response.json();
+                                alert('Failed to delete file: ' + data.message);
+                            }
+                        } catch (err) {
+                            alert('Error deleting file.');
+                            console.error(err);
+                        }
+                    }
+                });
+            }
+
+            if (qrBtn) {
+                qrBtn.addEventListener('click', () => {
+                    modalQR.src = qrBtn.getAttribute('data-qr');
+                    modalTitle.textContent = `QR Code for ${qrBtn.getAttribute('data-name')}`;
+                    qrModal.style.display = 'flex';
+                });
+            }
+        }
+
+        // QR modal closing
+        closeModalBtn.addEventListener('click', () => {
             qrModal.style.display = 'none';
             modalQR.src = '';
-        }
-    });
+        });
 
-    document.querySelectorAll('.toggle-qr-btn').forEach(button => {
-        button.addEventListener('click', () => {
-            const parentItem = button.closest('.item');
-            const qrContainer = parentItem.querySelector('.qr-container');
-
-            if (!qrContainer) return;
-
-            if (qrContainer.style.display === 'none' || qrContainer.style.display === '') {
-                qrContainer.style.display = 'block';
-                button.textContent = 'Hide QR';
-            } else {
-                qrContainer.style.display = 'none';
-                button.textContent = 'Show QR';
+        qrModal.addEventListener('click', (e) => {
+            if (e.target === qrModal) {
+                qrModal.style.display = 'none';
+                modalQR.src = '';
             }
         });
-    });
 
-    // Your existing delete button code here (unchanged)
-    document.querySelectorAll('.delete-btn').forEach(button => {
-        button.addEventListener('click', async () => {
-            const file = button.getAttribute('data-file');
-            if (confirm(`Are you sure you want to delete ${file}?`)) {
-                try {
-                    const response = await fetch(`/delete/${file}`, {
-                        method: 'DELETE',
-                    });
+        // Initial render
+        loadNextChunk();
 
-                    if (response.ok) {
-                        alert('File deleted successfully!');
-                        const item = button.closest('.item');
-                        if (item) item.remove();
-                    } else {
-                        const data = await response.json();
-                        alert('Failed to delete file: ' + data.message);
-                    }
-                } catch (err) {
-                    alert('Error deleting file.');
-                    console.error(err);
+        // Load on scroll bottom
+        document.querySelector('.scroll-container').addEventListener('scroll', () => {
+            const container = document.querySelector('.scroll-container');
+            if (container.scrollTop + container.clientHeight >= container.scrollHeight - 5) {
+                if (currentIndex < filesWithQRCodes.length) {
+                    loadNextChunk();
                 }
             }
         });
-    });
-</script>
+    </script>
+</body>
 
 </html>

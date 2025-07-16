@@ -8,7 +8,7 @@ const http = require('http');
 const path = require('path');
 const cors = require('cors');
 const app = express();
-const PORT = 3265;
+const PORT = 3190;
 app.use(cors());
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
@@ -16,6 +16,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
+const baseUrl = `https://server-photobooth.senimankode.id`;
 
 function broadcastNewImage(fileName) {
   const message = JSON.stringify({ type: 'new_image', file: fileName });
@@ -79,7 +80,7 @@ app.post('/recieve-file', upload.single('image'), async (req, res) => {
         }
 
         const resultFilename = req.file.filename;
-        const downloadUrl = `https://server-photobooth.senimankode.id/downloads-result/${resultFilename}`;
+        const downloadUrl = `${baseUrl}/downloads-result/${resultFilename}`;
 
         // Generate QR code for download URL
         const qrCodeDataURL = await QRCode.toDataURL(downloadUrl);

@@ -1,7 +1,7 @@
 module.exports = {
     apps: [
       {
-        name: "Api-photobooth",              // Name of your application
+        name: "Api-photobooth-byd",              // Name of your application
         script: "./server.js",      // Path to the main file
         instances: "1",           // Auto-detect the number of instances (for clustering)
         exec_mode: "cluster",       // Run in cluster mode
