@@ -16,7 +16,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
-const baseUrl = `https://server-photobooth.senimankode.id`;
+const baseUrl = `https://server-photobooth.buildyourdreams.live`;
 
 function broadcastNewImage(fileName) {
   const message = JSON.stringify({ type: 'new_image', file: fileName });
@@ -173,7 +173,7 @@ app.post('/upload', async (req, res) => {
         fs.writeFileSync(filePath, image, { encoding: 'base64' });
 
         // Generate a QR code for the download URL
-        const downloadUrl = `https://server-photobooth.senimankode.id/downloads/${resultFilename}`;
+        const downloadUrl = `https://server-photobooth.buildyourdreams.live/downloads/${resultFilename}`;
         const qrCodeDataURL = await QRCode.toDataURL(downloadUrl);
 
         // Prepare response data
@@ -211,7 +211,7 @@ app.post('/upload-dreams', async (req, res) => {
         // Save the image to the server
         fs.writeFileSync(filePath, image, { encoding: 'base64' });
         // Generate a QR code for the download URL
-        const downloadUrl = `https://server-photobooth.senimankode.id/downloads-dreams/${resultFilename}`;
+        const downloadUrl = `https://server-photobooth.buildyourdreams.live/downloads-dreams/${resultFilename}`;
         const qrCodeDataURL = await QRCode.toDataURL(downloadUrl);
 
         // Prepare response data
