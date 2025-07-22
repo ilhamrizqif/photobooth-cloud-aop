@@ -41,45 +41,77 @@ const storage = multer.diskStorage({
         cb(null, uniqueName);
     }
 });
+const storageDreams = multer.diskStorage({
+    destination: function (req, file, cb) {
+        const uploadDir = path.join(__dirname, 'downloads-dreams');
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir);
+        }
+        cb(null, uploadDir);
+    },
+    filename: function (req, file, cb) {
+        const ext = path.extname(file.originalname);
+        const uniqueName = `uploaded_image_${Date.now()}${ext}`;
+        cb(null, uniqueName);
+    }
+});
+const uploadDreams = multer({ storage: storageDreams });   
 const upload = multer({ storage });
+
 app.use('/downloads', express.static(path.join(__dirname, 'downloads')));
 app.use('/downloads-dreams', express.static(path.join(__dirname, 'downloads-dreams')));
+app.post('/recieve-file', upload.single('image'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).send({ message: 'No file uploaded.' });
+        }
+
+        const resultFilename = req.file.filename;
+        const downloadUrl = `${baseUrl}/downloads-result/${resultFilename}`;
+
+        // Generate QR code for download URL
+        const qrCodeDataURL = await QRCode.toDataURL(downloadUrl);
+
+        const response = {
+            qrCodeDataURL,
+            resultFilename,
+            download_url: downloadUrl,
+            message: 'File successfully uploaded and processed.'
+        };
+
+        res.status(201).json(response);
+    } catch (error) {
+        console.error('Error processing file upload:', error);
+        res.status(500).json({ message: 'File upload failed.', error: error.message });
+    }
+});
+app.post('/recieve-file-dreams', uploadDreams.single('image'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).send({ message: 'No file uploaded.' });
+        }
+
+        const resultFilename = req.file.filename;
+        const downloadUrl = `${baseUrl}/downloads-dreams-result/${resultFilename}`;
+
+        // Generate QR code for download URL
+        const qrCodeDataURL = await QRCode.toDataURL(downloadUrl);
+
+        const response = {
+            qrCodeDataURL,
+            resultFilename,
+            download_url: downloadUrl,
+            message: 'File successfully uploaded and processed.'
+        };
+
+        res.status(201).json(response);
+    } catch (error) {
+        console.error('Error processing file upload:', error);
+        res.status(500).json({ message: 'File upload failed.', error: error.message });
+    }
+});
 app.get('/', (req, res) => {
     res.status(404).render('404'); 
-});
-app.get('/gallery1', async (req, res) => {
-  try {
-    const downloadsDir = path.join(__dirname, 'downloads');
-    const files = fs.readdirSync(downloadsDir).filter(file => /\.(png|jpe?g|webp)$/i.test(file));
-    const filesWithQRCodes = await Promise.all(files.map(async file => {
-      const downloadUrl = `${req.protocol}://${req.get('host')}/downloads/${file}`;
-      previewUrl = `${req.protocol}://${req.get('host')}/downloads-result/${file}`;
-      const qrDataUrl = await QRCode.toDataURL(previewUrl, { errorCorrectionLevel: 'H' });
-      return { file, qrDataUrl };
-    }));
-
-    res.render('mainMenu', { filesWithQRCodes });
-  } catch (error) {
-    console.error('Error loading gallery:', error);
-    res.status(500).send('Internal Server Error');
-  }
-});
-app.get('/gallery-dreams1', async (req, res) => {
-  try {
-    const downloadsDir = path.join(__dirname, 'downloads-dreams');
-    const files = fs.readdirSync(downloadsDir).filter(file => /\.(png|jpe?g|webp)$/i.test(file));
-    const filesWithQRCodes = await Promise.all(files.map(async file => {
-      const downloadUrl = `${req.protocol}://${req.get('host')}/downloads-dreams/${file}`;
-      previewUrl = `${req.protocol}://${req.get('host')}/downloads-dreams-result/${file}`;
-      const qrDataUrl = await QRCode.toDataURL(previewUrl, { errorCorrectionLevel: 'H' });
-      return { file, qrDataUrl };
-    }));
-
-    res.render('mainMenu-dreams', { filesWithQRCodes });
-  } catch (error) {
-    console.error('Error loading gallery:', error);
-    res.status(500).send('Internal Server Error');
-  }
 });
 app.get('/gallery', async (req, res) => {
   try {
@@ -145,56 +177,7 @@ app.get('/downloads-dreams-result/:file', (req, res) => {
   }
   res.render('downloadResult', { file });
 });
-app.post('/recieve-file', upload.single('image'), async (req, res) => {
-    try {
-        if (!req.file) {
-            return res.status(400).send({ message: 'No file uploaded.' });
-        }
 
-        const resultFilename = req.file.filename;
-        const downloadUrl = `${baseUrl}/downloads-result/${resultFilename}`;
-
-        // Generate QR code for download URL
-        const qrCodeDataURL = await QRCode.toDataURL(downloadUrl);
-
-        const response = {
-            qrCodeDataURL,
-            resultFilename,
-            download_url: downloadUrl,
-            message: 'File successfully uploaded and processed.'
-        };
-
-        res.status(201).json(response);
-    } catch (error) {
-        console.error('Error processing file upload:', error);
-        res.status(500).json({ message: 'File upload failed.', error: error.message });
-    }
-});
-app.post('/recieve-file-dreams', upload.single('image'), async (req, res) => {
-    try {
-        if (!req.file) {
-            return res.status(400).send({ message: 'No file uploaded.' });
-        }
-
-        const resultFilename = req.file.filename;
-        const downloadUrl = `${baseUrl}/downloads-dreams-result/${resultFilename}`;
-
-        // Generate QR code for download URL
-        const qrCodeDataURL = await QRCode.toDataURL(downloadUrl);
-
-        const response = {
-            qrCodeDataURL,
-            resultFilename,
-            download_url: downloadUrl,
-            message: 'File successfully uploaded and processed.'
-        };
-
-        res.status(201).json(response);
-    } catch (error) {
-        console.error('Error processing file upload:', error);
-        res.status(500).json({ message: 'File upload failed.', error: error.message });
-    }
-});
 app.post('/upload', async (req, res) => {
     console.log('Received upload request');
     // Validate request body
