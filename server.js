@@ -43,6 +43,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 app.use('/downloads', express.static(path.join(__dirname, 'downloads')));
+app.use('/downloads-dreams', express.static(path.join(__dirname, 'downloads-dreams')));
 app.get('/', (req, res) => {
     res.status(404).render('404'); 
 });
@@ -65,9 +66,36 @@ app.get('/gallery', async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 });
+app.get('/gallery-dreams', async (req, res) => {
+  try {
+    const downloadsDir = path.join(__dirname, 'downloads-dreams');
+    const files = fs.readdirSync(downloadsDir).filter(file => /\.(png|jpe?g|webp)$/i.test(file));
+
+    // Generate QR codes for each file (async)
+    const filesWithQRCodes = await Promise.all(files.map(async file => {
+      const downloadUrl = `${req.protocol}://${req.get('host')}/downloads-dreams/${file}`;
+      previewUrl = `${req.protocol}://${req.get('host')}/downloads-dreams-result/${file}`;
+      const qrDataUrl = await QRCode.toDataURL(previewUrl, { errorCorrectionLevel: 'H' });
+      return { file, qrDataUrl };
+    }));
+
+    res.render('mainMenu-dreams', { filesWithQRCodes });
+  } catch (error) {
+    console.error('Error loading gallery:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
 app.get('/downloads-result/:file', (req, res) => {
   const file = req.params.file;
   const filePath = path.join(__dirname, 'downloads', file);
+  if (!file || !fs.existsSync(filePath)) {
+    return res.status(404).send('File not found.');
+  }
+  res.render('downloadResult', { file });
+});
+app.get('/downloads-dreams-result/:file', (req, res) => {
+  const file = req.params.file;
+  const filePath = path.join(__dirname, 'downloads-dreams', file);
   if (!file || !fs.existsSync(filePath)) {
     return res.status(404).send('File not found.');
   }
@@ -81,6 +109,31 @@ app.post('/recieve-file', upload.single('image'), async (req, res) => {
 
         const resultFilename = req.file.filename;
         const downloadUrl = `${baseUrl}/downloads-result/${resultFilename}`;
+
+        // Generate QR code for download URL
+        const qrCodeDataURL = await QRCode.toDataURL(downloadUrl);
+
+        const response = {
+            qrCodeDataURL,
+            resultFilename,
+            download_url: downloadUrl,
+            message: 'File successfully uploaded and processed.'
+        };
+
+        res.status(201).json(response);
+    } catch (error) {
+        console.error('Error processing file upload:', error);
+        res.status(500).json({ message: 'File upload failed.', error: error.message });
+    }
+});
+app.post('/recieve-file-dreams', upload.single('image'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).send({ message: 'No file uploaded.' });
+        }
+
+        const resultFilename = req.file.filename;
+        const downloadUrl = `${baseUrl}/downloads-dreams-result/${resultFilename}`;
 
         // Generate QR code for download URL
         const qrCodeDataURL = await QRCode.toDataURL(downloadUrl);
@@ -138,9 +191,63 @@ app.post('/upload', async (req, res) => {
         res.status(500).json({ message: 'Failed to upload image.', error: error.message });
     }
 });
+app.post('/upload-dreams', async (req, res) => {
+    console.log('Received upload request');
+    // Validate request body
+    try {
+        const { image } = req.body;
+        if (!image) {
+            return res.status(400).send({ message: 'No image data provided.' });
+        }
+
+        // Define file path and name (always PNG)
+        const resultFilename = `uploaded_image_${Date.now()}.png`;
+        const filePath = path.join(__dirname, 'downloads-dreams', resultFilename);
+
+        // Ensure the downloads-dreams directory exists
+        if (!fs.existsSync(path.join(__dirname, 'downloads-dreams'))) {
+            fs.mkdirSync(path.join(__dirname, 'downloads-dreams'));
+        }
+        // Save the image to the server
+        fs.writeFileSync(filePath, image, { encoding: 'base64' });
+        // Generate a QR code for the download URL
+        const downloadUrl = `https://server-photobooth.senimankode.id/downloads-dreams/${resultFilename}`;
+        const qrCodeDataURL = await QRCode.toDataURL(downloadUrl);
+
+        // Prepare response data
+        const response = {
+            qrCodeDataURL,
+            resultFilename,
+            download_url: downloadUrl,
+            message: 'File successfully uploaded and processed.',
+        };
+        broadcastNewImage(resultFilename);
+        // Send the response
+        res.status(201).json(response);
+    } catch (error) {
+        console.error('Error uploading image:', error);
+        res.status(500).json({ message: 'Failed to upload image.', error: error.message });
+    }
+});
 app.delete('/delete/:file', (req, res) => {
     const file = req.params.file;
     const filePath = path.join(__dirname, 'downloads', file);
+
+    if (!file || !fs.existsSync(filePath)) {
+        return res.status(404).json({ message: 'File not found.' });
+    }
+
+    fs.unlink(filePath, (err) => {
+        if (err) {
+            console.error('Error deleting file:', err);
+            return res.status(500).json({ message: 'Failed to delete file.' });
+        }
+        res.json({ message: 'File deleted successfully.' });
+    });
+});
+app.delete('/delete-dreams/:file', (req, res) => {
+    const file = req.params.file;
+    const filePath = path.join(__dirname, 'downloads-dreams', file);
 
     if (!file || !fs.existsSync(filePath)) {
         return res.status(404).json({ message: 'File not found.' });

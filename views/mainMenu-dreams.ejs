@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>📂 Downloadable Images</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        @font-face {
+            font-family: 'NormsProRegular';
+            src: url('/assets/fonts/normsproregular.TTF') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            /* overflow: hidden; */
+            font-family: 'NormsProRegular', Arial, sans-serif;
+            background: url('/assets/bgIpad.jpg') no-repeat center center fixed;
+            background-size: cover;
+            box-sizing: border-box;
+        }
+
+        .page-wrapper {
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .logo-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-header img {
+            width: 400px;
+            max-width: 90vw;
+        }
+
+        .scroll-container {
+            flex: 1;
+            width: 100%;
+            max-width: 90vw;
+            overflow-y: auto;
+            box-sizing: border-box;
+            scrollbar-width: thin;
+            scrollbar-color: #888 transparent;
+        }
+
+        .scroll-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .scroll-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .scroll-container::-webkit-scrollbar-thumb {
+            background-color: #888;
+            border-radius: 4px;
+        }
+
+        .scroll-container::-webkit-scrollbar-thumb:hover {
+            background-color: #555;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 10px 0 20px 0;
+        }
+
+        .item {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #003cff;
+            box-shadow: 0 0 15px #003cff, 0 0 30px #003cff;
+            backdrop-filter: blur(20px);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .item img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+
+        .item a {
+            display: inline-block;
+            text-decoration: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .item a.btnd {
+            background: linear-gradient(to right, #0a1b50, #1b97c1);
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 12px;
+            margin-top: 10px;
+        }
+
+        .item button.btndel {
+            background: linear-gradient(to right, #ff0000, #670a0a);
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 12px;
+            margin-top: 10px;
+        }
+
+        .item button.btndQ {
+            background: linear-gradient(to right, #0008ff, #009bc1);
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 12px;
+            margin-top: 10px;
+        }
+
+        .item p {
+            margin: 10px 0 5px;
+            font-weight: bold;
+            color: white;
+        }
+
+        /* Skeleton loading effect */
+        .skeleton {
+            background: linear-gradient(-90deg, #ffffff 0%, #9f9f9f 50%, #eeeeee96 100%);
+            background-size: 400% 400%;
+            animation: shimmer 1.2s ease-in-out infinite;
+            border-radius: 8px;
+            height: 200px;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 100% 0;
+            }
+
+            100% {
+                background-position: -100% 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-wrapper">
+        <div class="logo-header">
+            <!-- <img src="/assets/logoBcaData.webp" alt="Logo" /> -->
+        </div>
+
+        <div class="scroll-container">
+            <div id="gallery" class="gallery"></div>
+        </div>
+    </div>
+
+    <!-- QR Modal -->
+    <div id="qrModal" style="
+        display:none;
+        position: fixed;
+        z-index: 1000;
+        left: 0; top: 0; right:0; bottom: 0;
+        background: rgb(255, 255, 255);
+        justify-content: center;
+        align-items: center;
+        ">
+        <div style="
+        padding: 20px;
+        border-radius: 12px;
+        max-width: 90vw;
+        max-height: 90vh;
+        text-align: center;
+        position: relative;
+    ">
+            <button id="closeModal" style="
+            position: absolute;
+            top: 10px; right: 10px;
+            font-size: 20px;
+            border: none;
+            background: transparent;
+            cursor: pointer;">✖</button>
+            <h3 id="modalTitle"></h3>
+            <img id="modalQR" src="" alt="QR Code" style="max-width: 100%; height: auto; margin-top: 10px;" />
+        </div>
+    </div>
+
+    <script>
+        const filesWithQRCodes = <%- JSON.stringify(filesWithQRCodes) %>;
+
+        const gallery = document.getElementById('gallery');
+        const chunkSize = 5;
+        let currentIndex = 0;
+
+        const qrModal = document.getElementById('qrModal');
+        const modalQR = document.getElementById('modalQR');
+        const modalTitle = document.getElementById('modalTitle');
+        const closeModalBtn = document.getElementById('closeModal');
+
+        function createSkeletonItem() {
+            const div = document.createElement('div');
+            div.className = 'item';
+            div.innerHTML = `<div class="skeleton"></div><p>Loading...</p>`;
+            return div;
+        }
+
+        function createGalleryItem({ file, qrDataUrl }) {
+            const displayName = file.replace(/^uploaded_image_/, '');
+            const div = document.createElement('div');
+            div.className = 'item';
+            div.innerHTML = `
+                <a href="/downloads-dreams-result/${file}">
+                    <div class="skeleton"></div>
+                    <img src="/downloads-dreams/${file}" alt="${displayName}" style="display: none;" />
+                    <p class="p">Action:</p>
+                </a>
+                <a class="btnd" href="/downloads-dreams/${file}" download>⬇️ Download</a>
+                <button class="btndel delete-btn" data-file="${file}">Delete</button>
+                <button class="btndQ show-qr-modal-btn" data-qr="${qrDataUrl}" data-name="${displayName}">Show QR</button>
+            `;
+
+            const img = div.querySelector('img');
+            const skeleton = div.querySelector('.skeleton');
+            img.onload = () => {
+                skeleton.remove();
+                img.style.display = 'block';
+            };
+
+            return div;
+        }
+
+        function loadNextChunk() {
+            const chunk = filesWithQRCodes.slice(currentIndex, currentIndex + chunkSize);
+            chunk.forEach(item => {
+                const skeleton = createSkeletonItem();
+                gallery.appendChild(skeleton);
+
+                setTimeout(() => {
+                    const fullItem = createGalleryItem(item);
+                    gallery.replaceChild(fullItem, skeleton);
+                    attachEventListeners(fullItem);
+                }, 400 + Math.random() * 300);
+            });
+            currentIndex += chunkSize;
+        }
+
+        function loadUntilScrollable() {
+            const container = document.querySelector('.scroll-container');
+            const maxInitialLoads = 10; // prevent infinite loop if short content
+            let tries = 0;
+
+            function tryLoad() {
+                if (currentIndex < filesWithQRCodes.length && container.scrollHeight <= container.clientHeight && tries < maxInitialLoads) {
+                    loadNextChunk();
+                    tries++;
+                    setTimeout(tryLoad, 100); // wait for DOM update
+                }
+            }
+
+            tryLoad();
+        }
+
+        loadNextChunk();
+        loadUntilScrollable();
+
+        function attachEventListeners(item) {
+            const deleteBtn = item.querySelector('.delete-btn');
+            const qrBtn = item.querySelector('.show-qr-modal-btn');
+
+            if (deleteBtn) {
+                deleteBtn.addEventListener('click', async () => {
+                    const file = deleteBtn.getAttribute('data-file');
+                    if (confirm(`Are you sure you want to delete ${file}?`)) {
+                        try {
+                            const response = await fetch(`/delete-dreams/${file}`, { method: 'DELETE' });
+                            if (response.ok) {
+                                alert('File deleted successfully!');
+                                item.remove();
+                            } else {
+                                const data = await response.json();
+                                alert('Failed to delete file: ' + data.message);
+                            }
+                        } catch (err) {
+                            alert('Error deleting file.');
+                            console.error(err);
+                        }
+                    }
+                });
+            }
+
+            if (qrBtn) {
+                qrBtn.addEventListener('click', () => {
+                    modalQR.src = qrBtn.getAttribute('data-qr');
+                    modalTitle.textContent = `QR Code for ${qrBtn.getAttribute('data-name')}`;
+                    qrModal.style.display = 'flex';
+                });
+            }
+        }
+
+        // QR modal closing
+        closeModalBtn.addEventListener('click', () => {
+            qrModal.style.display = 'none';
+            modalQR.src = '';
+        });
+
+        qrModal.addEventListener('click', (e) => {
+            if (e.target === qrModal) {
+                qrModal.style.display = 'none';
+                modalQR.src = '';
+            }
+        });
+
+        // Initial render
+        loadNextChunk();
+
+        // Load on scroll bottom
+        document.querySelector('.scroll-container').addEventListener('scroll', () => {
+            const container = document.querySelector('.scroll-container');
+            if (container.scrollTop + container.clientHeight >= container.scrollHeight - 5) {
+                if (currentIndex < filesWithQRCodes.length) {
+                    loadNextChunk();
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
