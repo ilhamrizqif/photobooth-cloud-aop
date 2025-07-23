@@ -175,7 +175,7 @@ app.get('/downloads-dreams-result/:file', (req, res) => {
   if (!file || !fs.existsSync(filePath)) {
     return res.status(404).send('File not found.');
   }
-  res.render('downloadResult', { file });
+  res.render('downloadResult-dreams', { file });
 });
 
 app.post('/upload', async (req, res) => {
