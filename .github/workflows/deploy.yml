@@ -35,7 +35,7 @@ jobs:
             echo "Starting deployment process..."
 
             # Navigate to the application's directory
-            cd /home/buildyourdreams-cloud-photobooth/htdocs/cloud-photobooth.buildyourdreams.live/photobooth-cloud || exit
+            cd /home/abracodebra-btv-photobooth/htdocs/btv-photobooth.abracodebra.com/btvserverbooth || exit
 
             # Pull the latest changes from the GitHub repository
             git pull origin main
