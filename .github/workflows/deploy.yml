@@ -21,13 +21,13 @@ jobs:
       - name: Deploy Application
         uses: appleboy/ssh-action@v0.1.7
         with:
-          host: ${{ secrets.AIBYD_HOST }}
-          username: ${{ secrets.AIBYD_USER }}
-          password: ${{ secrets.AIBYD_PASSWORD }}
+          host: ${{ secrets.AIBTV_HOST }}
+          username: ${{ secrets.AIBTV_USER }}
+          password: ${{ secrets.AIBTV_PASSWORD }}
           port: 22
           script: |
             # Ensure npm and node are in the PATH
-            export PATH=$PATH:/home/${{ secrets.AIBYD_USER }}/.nvm/versions/node/v22.17.1/bin
+            export PATH=$PATH:/home/${{ secrets.AIBTV_USER }}/.nvm/versions/node/v22.17.1/bin
 
             # Check if npm is available
             which npm || { echo "npm not found"; exit 1; }
