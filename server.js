@@ -8,7 +8,7 @@ const http = require('http');
 const path = require('path');
 const cors = require('cors');
 const app = express();
-const PORT = 3190;
+const PORT = 3420;
 app.use(cors());
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
