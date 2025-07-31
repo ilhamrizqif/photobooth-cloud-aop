@@ -21,13 +21,13 @@ jobs:
       - name: Deploy Application
         uses: appleboy/ssh-action@v0.1.7
         with:
-          host: ${{ secrets.AIBTV_HOST }}
-          username: ${{ secrets.AIBTV_USER }}
-          password: ${{ secrets.AIBTV_PASSWORD }}
+          host: ${{ secrets.AIAOP_HOST }}
+          username: ${{ secrets.AIAOP_USER }}
+          password: ${{ secrets.AIAOP_PASSWORD }}
           port: 22
           script: |
             # Ensure npm and node are in the PATH
-            export PATH=$PATH:/home/${{ secrets.AIBTV_USER }}/.nvm/versions/node/v22.17.1/bin
+            export PATH=$PATH:/home/${{ secrets.AIAOP_USER }}/.nvm/versions/node/v22.17.1/bin
 
             # Check if npm is available
             which npm || { echo "npm not found"; exit 1; }
@@ -35,7 +35,7 @@ jobs:
             echo "Starting deployment process..."
 
             # Navigate to the application's directory
-            cd /home/abracodebra-btv-photobooth/htdocs/btv-photobooth.abracodebra.com/btvserverbooth || exit
+            cd /home/abracodebra-aop-photobooth/htdocs/aop-photobooth.abracodebra.com/photobooth-cloud-aop || exit
 
             # Pull the latest changes from the GitHub repository
             git pull origin main

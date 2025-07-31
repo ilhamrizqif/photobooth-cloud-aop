@@ -16,7 +16,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
-const baseUrl = `https://btv-photobooth.abracodebra.com`;
+const baseUrl = `https://aop-photobooth.abracodebra.com`;
 
 function broadcastNewImage(fileName) {
   const message = JSON.stringify({ type: 'new_image', file: fileName });
